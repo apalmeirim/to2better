@@ -1,0 +1,242 @@
+:root {
+  color-scheme: dark;
+  --bg: #262626;
+  --line: #545454;
+  --text: #f3efe7;
+  --muted: #b4ab9f;
+  --danger: #ff9f8f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "iA Writer Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+a:hover,
+.link-button:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.compact-view {
+  width: min(100%, 360px);
+}
+
+.home-view,
+.auth-view,
+.about-view {
+  display: grid;
+  justify-items: center;
+}
+
+.home-header {
+  margin-bottom: 32px;
+}
+
+.home-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: lowercase;
+}
+
+.small-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: lowercase;
+}
+
+.timer-view {
+  width: min(100%, 720px);
+  display: grid;
+  justify-items: center;
+}
+
+.small-header {
+  margin-bottom: 28px;
+}
+
+.copy {
+  margin-bottom: 32px;
+  color: var(--muted);
+  line-height: 1.7;
+  text-align: center;
+}
+
+.copy p {
+  margin: 0;
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+.stack {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+}
+
+.field {
+  display: grid;
+  gap: 10px;
+  text-align: center;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+input {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: center;
+}
+
+input:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+
+.compact-links {
+  margin-top: 8px;
+  gap: 14px;
+}
+
+.about-links {
+  gap: 16px;
+}
+
+.toolbar,
+.timer-meta,
+.timer-actions,
+.timer-form {
+  display: flex;
+  gap: 16px;
+}
+
+.toolbar {
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.timer-card {
+  padding: 22px 0;
+  text-align: center;
+}
+
+.timer-name-button {
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.timer-display {
+  margin: 0 0 16px;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: 1.2;
+}
+
+.timer-meta {
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.timer-actions {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.create-link {
+  margin-bottom: 32px;
+}
+
+#timers-list {
+  width: 100%;
+}
+
+.message {
+  margin-bottom: 24px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.message.error {
+  color: var(--danger);
+}
+
+.empty-state {
+  padding: 24px 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .toolbar {
+    gap: 10px;
+  }
+}

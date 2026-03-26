@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>register | addiction</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="auth-view compact-view">
+      <section id="message" class="message hidden" aria-live="polite"></section>
+
+      <form id="signup-form" class="stack">
+        <label class="field">
+          <span>email</span>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </label>
+
+        <label class="field">
+          <span>password</span>
+          <input id="password" name="password" type="password" autocomplete="new-password" required>
+        </label>
+
+        <div class="nav-links compact-links">
+          <button type="submit" class="link-button">register</button>
+          <a href="signin.html">back</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/signup.js"></script>
+</body>
+</html>
