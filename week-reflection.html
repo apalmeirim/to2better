@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>week reflection | to2better</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="week-reflection">
+  <main class="page">
+    <section class="dashboard-view dashboard-view-narrow">
+      <section id="message" class="message hidden" aria-live="polite"></section>
+
+      <header class="dashboard-header">
+        <button type="button" id="back-button" class="link-button" data-back-href="reflection.html">back</button>
+      </header>
+
+      <section class="sector-page sector-page-plain">
+        <div class="panel-heading">
+          <div>
+            <p id="week-reflection-dates" class="muted"></p>
+          </div>
+        </div>
+
+        <section class="stack week-reflection-view">
+          <div>
+            <p class="muted">word</p>
+            <button id="week-reflection-word" type="button" class="timer-name-button account-value"></button>
+          </div>
+
+          <label class="field field-left">
+            <span id="week-reflection-status">reflection</span>
+            <textarea id="week-reflection-input" class="reflection-textarea" rows="8" placeholder="write your reflection"></textarea>
+          </label>
+
+          <div class="section-actions">
+            <button id="save-week-reflection-button" type="button" class="link-button">save reflection</button>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/better-app.js"></script>
+  <script src="js/week-reflection.js"></script>
+</body>
+</html>

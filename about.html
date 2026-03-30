@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>about</title>
+  <title>about | to2better</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,17 +14,23 @@
       </header>
 
       <div class="copy">
-        <p>this app is a simple app that gives me a free option to
-          track my time and reduce procrastination and bad habits, or in other words, 
-          to cut on addictive traits. i created this using basic web app technology, with a
-          huge helping hand from my wonderful friends from AI.</p>
+        <p>a simple web-app that keeps track of things i want to stop doing, to start habitually and reflect on the week. 
+        </p>
+      </div>
+      <div class="copy">
+        <p>
+          tech stack: JS, HTML & CSS. database via Supabase, deployed via Vercel.</p>
       </div>
 
       <nav class="nav-links about-links">
         <a href="https://github.com/apalmeirim/addiction">github repo</a>
-        <a href="index.html">back</a>
+        <a id="about-back-link" href="index.html">back</a>
       </nav>
     </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/about.js"></script>
 </body>
 </html>

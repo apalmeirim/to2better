@@ -3,27 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>timers | addiction</title>
+  <title>to2better</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="home">
   <main class="page">
-    <section class="timer-view">
+    <section class="dashboard-view dashboard-view-narrow">
       <section id="message" class="message hidden" aria-live="polite"></section>
 
-      <div class="toolbar">
-        <p id="user-email" class="muted"></p>
-        <button id="sign-out-button" type="button" class="link-button">sign out</button>
-      </div>
+      <header id="dashboard-header" class="dashboard-header hidden">
+        <div class="toolbar toolbar-inline toolbar-centered">
+          <p id="user-email" class="muted"></p>
+          <button id="sign-out-button" type="button" class="link-button">sign out</button>
+        </div>
+      </header>
 
-      <button id="create-timer-button" type="button" class="link-button create-link">create timer</button>
+      <section id="onboarding-panel" class="hidden">
+        <form id="onboarding-form" class="stack onboarding-stack">
+          <p id="onboarding-step-indicator" class="muted">1 / 4</p>
 
-      <section id="timers-list" class="stack" aria-live="polite"></section>
+          <section class="onboarding-step" data-step="0">
+            <label class="field field-left onboarding-field">
+              <span>what do you want to stop?</span>
+              <textarea id="stop-items" name="stop-items" rows="6" required></textarea>
+            </label>
+            <p class="muted">list at least two, separated by commas or new lines.</p>
+          </section>
+
+          <section class="onboarding-step hidden" data-step="1">
+            <label class="field field-left onboarding-field">
+              <span>what do you want to start?</span>
+              <textarea id="start-items" name="start-items" rows="6" required></textarea>
+            </label>
+            <p class="muted">list at least two, separated by commas or new lines.</p>
+          </section>
+
+          <section class="onboarding-step hidden" data-step="2">
+            <label class="field field-left onboarding-field">
+              <span>a word that describes your week?</span>
+              <input id="week-word" name="week-word" type="text" maxlength="40" required>
+            </label>
+          </section>
+
+          <section class="onboarding-step hidden" data-step="3">
+            <label class="field field-left onboarding-field">
+              <span>a word that describes your month?</span>
+              <input id="month-word" name="month-word" type="text" maxlength="40" required>
+            </label>
+          </section>
+
+          <div class="section-actions onboarding-actions">
+            <button id="onboarding-back-button" type="button" class="link-button">back</button>
+            <button id="onboarding-next-button" type="button" class="link-button">next</button>
+            <button id="onboarding-submit-button" type="submit" class="link-button hidden">save and enter</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="page-content" class="hub-view hidden">
+        <nav class="hub-links" aria-label="Sectors">
+          <a href="control.html">control</a>
+          <a href="growth.html">growth</a>
+          <a href="reflection.html">reflection</a>
+          <a href="account.html">account</a>
+        </nav>
+      </section>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="js/better-app.js"></script>
   <script src="js/timer.js"></script>
 </body>
 </html>

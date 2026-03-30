@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reflection | to2better</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="reflection">
+  <main class="page">
+    <section class="dashboard-view dashboard-view-narrow">
+      <section id="message" class="message hidden" aria-live="polite"></section>
+
+      <header class="dashboard-header">
+        <button type="button" id="back-button" class="link-button">back</button>
+      </header>
+
+      <section class="sector-page sector-page-plain">
+        <div class="panel-heading">
+          <div>
+            <button id="reflection-title" type="button" class="timer-name-button reflection-title-button">weeks</button>
+            <p id="reflection-dates" class="muted"></p>
+          </div>
+        </div>
+
+        <div class="reflection-nav">
+          <button id="reflection-prev-button" type="button" class="link-button">&lt;</button>
+          <div id="reflection-links" class="hub-links reflection-links"></div>
+          <button id="reflection-next-button" type="button" class="link-button">&gt;</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/better-app.js"></script>
+  <script src="js/reflection.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>register | to2better</title>
+  <title>reset password | to2better</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,19 +15,14 @@
         <h1>to2better</h1>
       </header>
 
-      <form id="signup-form" class="stack">
+      <form id="reset-form" class="stack">
         <label class="field">
-          <span>email</span>
-          <input id="email" name="email" type="email" autocomplete="email" required>
-        </label>
-
-        <label class="field">
-          <span>password</span>
+          <span>new password</span>
           <input id="password" name="password" type="password" autocomplete="new-password" required>
         </label>
 
         <div class="nav-links compact-links">
-          <button type="submit" class="link-button">register</button>
+          <button type="submit" class="link-button">update password</button>
           <a href="signin.html">back</a>
         </div>
       </form>
@@ -36,6 +31,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
-  <script src="js/signup.js"></script>
+  <script src="js/reset.js"></script>
 </body>
 </html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>account | to2better</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="account">
+  <main class="page">
+    <section class="dashboard-view dashboard-view-narrow">
+      <section id="message" class="message hidden" aria-live="polite"></section>
+
+      <header class="dashboard-header">
+        <button type="button" id="back-button" class="link-button">back</button>
+      </header>
+
+      <section class="sector-page sector-page-plain">
+    
+
+        <nav class="hub-links" aria-label="Account sections">
+          <a href="logs.html">logs</a>
+          <a href="settings.html">settings</a>
+          <a href="about.html">about</a>
+        </nav>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/better-app.js"></script>
+  <script src="js/account.js"></script>
+</body>
+</html>

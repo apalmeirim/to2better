@@ -1,263 +1,210 @@
 const state = {
   session: null,
-  timers: [],
-  timerIntervalId: null,
+  profile: null,
+  onboardingStep: 0,
 };
 
-const createTimerButton = document.querySelector("#create-timer-button");
-const timersList = document.querySelector("#timers-list");
-const userEmail = document.querySelector("#user-email");
-const signOutButton = document.querySelector("#sign-out-button");
+const dashboardHeader = document.querySelector("#dashboard-header");
+const onboardingPanel = document.querySelector("#onboarding-panel");
+const pageContent = document.querySelector("#page-content");
+const onboardingForm = document.querySelector("#onboarding-form");
+const onboardingSteps = Array.from(document.querySelectorAll(".onboarding-step"));
+const onboardingStepIndicator = document.querySelector("#onboarding-step-indicator");
+const onboardingBackButton = document.querySelector("#onboarding-back-button");
+const onboardingNextButton = document.querySelector("#onboarding-next-button");
+const onboardingSubmitButton = document.querySelector("#onboarding-submit-button");
 
-function formatElapsedTime(startedAt) {
-  const elapsedMs = Math.max(0, Date.now() - new Date(startedAt).getTime());
-  const totalSeconds = Math.floor(elapsedMs / 1000);
-  const secondsPerMinute = 60;
-  const minutesPerHour = 60;
-  const minutesPerDay = 24 * minutesPerHour;
-  const minutesPerWeek = 7 * minutesPerDay;
-  const secondsPerHour = secondsPerMinute * minutesPerHour;
-  const secondsPerDay = secondsPerHour * 24;
-  const secondsPerWeek = secondsPerDay * 7;
-
-  let remainingSeconds = totalSeconds;
-  const weeks = Math.floor(remainingSeconds / secondsPerWeek);
-  remainingSeconds -= weeks * secondsPerWeek;
-  const days = Math.floor(remainingSeconds / secondsPerDay);
-  remainingSeconds -= days * secondsPerDay;
-  const hours = Math.floor(remainingSeconds / secondsPerHour);
-  remainingSeconds -= hours * secondsPerHour;
-  const minutes = Math.floor(remainingSeconds / secondsPerMinute);
-  remainingSeconds -= minutes * secondsPerMinute;
-  const seconds = remainingSeconds;
-
-  return `${weeks}w ${days}d ${hours}h ${minutes}m ${seconds}s`;
+function focusOnboardingStep() {
+  onboardingSteps[state.onboardingStep]?.querySelector("textarea, input")?.focus();
 }
 
-function formatDate(value) {
-  return new Date(value).toLocaleString([], {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+function renderOnboardingStep() {
+  onboardingSteps.forEach((step, index) => {
+    step.classList.toggle("hidden", index !== state.onboardingStep);
   });
+
+  onboardingStepIndicator.textContent = `${state.onboardingStep + 1} / ${onboardingSteps.length}`;
+  onboardingNextButton.classList.toggle("hidden", state.onboardingStep === onboardingSteps.length - 1);
+  onboardingSubmitButton.classList.toggle("hidden", state.onboardingStep !== onboardingSteps.length - 1);
+  focusOnboardingStep();
 }
 
-function escapeHtml(value) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function renderTimers() {
-  if (!state.timers.length) {
-    timersList.innerHTML = `
-      <div class="empty-state">
-        <p>No timers yet. Create one to get started.</p>
-      </div>
-    `;
-    return;
+function validateOnboardingStep(stepIndex) {
+  if (stepIndex === 0 && BetterApp.parseList(document.querySelector("#stop-items").value).length < 2) {
+    showMessage("List at least two items for what you want to stop.", "error");
+    return false;
   }
 
-  timersList.innerHTML = state.timers
-    .map((timer) => {
-      return `
-        <article class="timer-card" data-id="${timer.id}">
-          <button type="button" data-action="rename" class="timer-name-button">${escapeHtml(timer.name)}</button>
-          <p class="timer-display" data-role="elapsed">${formatElapsedTime(timer.started_at)}</p>
-          <div class="timer-meta">
-            <span>${formatDate(timer.started_at)}</span>
-          </div>
-          <div class="timer-actions">
-            <button type="button" data-action="restart" class="link-button">restart</button>
-            <button type="button" data-action="delete" class="link-button">delete</button>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function updateTimerDisplays() {
-  const cards = timersList.querySelectorAll("[data-id]");
-  cards.forEach((card) => {
-    const id = card.getAttribute("data-id");
-    const timer = state.timers.find((item) => item.id === id);
-    const display = card.querySelector('[data-role="elapsed"]');
-    if (timer && display) {
-      display.textContent = formatElapsedTime(timer.started_at);
-    }
-  });
-}
-
-function startDisplayInterval() {
-  stopDisplayInterval();
-  updateTimerDisplays();
-  state.timerIntervalId = window.setInterval(updateTimerDisplays, 1000);
-}
-
-function stopDisplayInterval() {
-  if (state.timerIntervalId) {
-    window.clearInterval(state.timerIntervalId);
-    state.timerIntervalId = null;
-  }
-}
-
-async function fetchTimers() {
-  showMessage("Loading timers...");
-  const { data, error } = await supabaseClient
-    .from("timers")
-    .select("id, name, started_at, created_at")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    showMessage(error.message, "error");
-    return;
+  if (stepIndex === 1 && BetterApp.parseList(document.querySelector("#start-items").value).length < 2) {
+    showMessage("List at least two items for what you want to start.", "error");
+    return false;
   }
 
-  state.timers = data || [];
-  renderTimers();
-  startDisplayInterval();
+  if (stepIndex === 2 && !String(document.querySelector("#week-word").value || "").trim()) {
+    showMessage("Add one word for your week.", "error");
+    return false;
+  }
+
+  if (stepIndex === 3 && !String(document.querySelector("#month-word").value || "").trim()) {
+    showMessage("Add one word for your month.", "error");
+    return false;
+  }
+
   showMessage("");
+  return true;
 }
 
-async function createTimer(name) {
-  const timerName = name.trim() || "Timer";
-  showMessage("Creating timer...");
-  const { error } = await supabaseClient.from("timers").insert({
-    name: timerName,
-    user_id: state.session.user.id,
-  });
+async function submitOnboarding(event) {
+  event.preventDefault();
 
-  if (error) {
-    showMessage(error.message, "error");
+  if (!validateOnboardingStep(state.onboardingStep)) {
     return;
   }
 
-  await fetchTimers();
+  const stopItems = BetterApp.parseList(document.querySelector("#stop-items").value);
+  const startItems = BetterApp.parseList(document.querySelector("#start-items").value);
+  const weekWord = String(document.querySelector("#week-word").value || "").trim();
+  const monthWord = String(document.querySelector("#month-word").value || "").trim();
+  const userId = state.session.user.id;
+  const now = new Date().toISOString();
+
+  showMessage("Saving your first setup...");
+
+  const { data: insertedFocusItems, error: focusError } = await supabaseClient
+    .from("focus_items")
+    .insert([
+      ...stopItems.map((name) => ({ user_id: userId, kind: "stop", name })),
+      ...startItems.map((name) => ({ user_id: userId, kind: "start", name })),
+    ])
+    .select("id, kind, name");
+
+  if (focusError) {
+    showMessage(focusError.message, "error");
+    return;
+  }
+
+  const stopRows = (insertedFocusItems || []).filter((item) => item.kind === "stop");
+  const startRows = (insertedFocusItems || []).filter((item) => item.kind === "start");
+
+  if (stopRows.length) {
+    const { error } = await supabaseClient.from("timers").insert(
+      stopRows.map((item) => ({
+        user_id: userId,
+        focus_item_id: item.id,
+        name: item.name,
+      }))
+    );
+
+    if (error) {
+      showMessage(error.message, "error");
+      return;
+    }
+  }
+
+  if (startRows.length) {
+    const { error } = await supabaseClient.from("growth_tasks").insert(
+      startRows.map((item) => ({
+        user_id: userId,
+        title: item.name,
+      }))
+    );
+
+    if (error) {
+      showMessage(error.message, "error");
+      return;
+    }
+  }
+
+  const weekStart = BetterApp.toDateKey(BetterApp.startOfWeek());
+  const monthStart = BetterApp.toDateKey(BetterApp.startOfMonth());
+
+  const [{ error: weeklyError }, { error: monthlyError }, { data: profileData, error: profileError }] = await Promise.all([
+    supabaseClient.from("weekly_reflections").upsert(
+      {
+        user_id: userId,
+        week_start: weekStart,
+        word: weekWord,
+        updated_at: now,
+      },
+      { onConflict: "user_id,week_start" }
+    ),
+    supabaseClient.from("monthly_chapters").upsert(
+      {
+        user_id: userId,
+        month_start: monthStart,
+        word: monthWord,
+        updated_at: now,
+      },
+      { onConflict: "user_id,month_start" }
+    ),
+    supabaseClient
+      .from("profiles")
+      .update({ onboarded_at: now, updated_at: now })
+      .eq("user_id", userId)
+      .select("user_id, email, onboarded_at, created_at, updated_at")
+      .single(),
+  ]);
+
+  const firstError = weeklyError || monthlyError || profileError;
+  if (firstError) {
+    showMessage(firstError.message, "error");
+    return;
+  }
+
+  state.profile = profileData;
+  onboardingForm.reset();
+  renderPage();
 }
 
-async function restartTimer(id) {
-  showMessage("Restarting timer...");
-  const { error } = await supabaseClient
-    .from("timers")
-    .update({ started_at: new Date().toISOString() })
-    .eq("id", id);
+function renderPage() {
+  const onboarded = Boolean(state.profile?.onboarded_at);
+  dashboardHeader.classList.toggle("hidden", !onboarded);
+  onboardingPanel.classList.toggle("hidden", onboarded);
+  pageContent.classList.toggle("hidden", !onboarded);
 
-  if (error) {
-    showMessage(error.message, "error");
-    return;
+  if (!onboarded) {
+    renderOnboardingStep();
+  } else {
+    showMessage("");
   }
-
-  await fetchTimers();
 }
 
-async function renameTimer(id, currentName) {
-  const nextName = window.prompt("edit the name:", currentName);
-  if (nextName === null) {
-    return;
-  }
-
-  const timerName = nextName.trim() || "Timer";
-  showMessage("Updating timer...");
-  const { error } = await supabaseClient
-    .from("timers")
-    .update({ name: timerName })
-    .eq("id", id);
-
-  if (error) {
-    showMessage(error.message, "error");
-    return;
-  }
-
-  await fetchTimers();
-}
-
-async function deleteTimer(id) {
-  showMessage("Deleting timer...");
-  const { error } = await supabaseClient.from("timers").delete().eq("id", id);
-
-  if (error) {
-    showMessage(error.message, "error");
-    return;
-  }
-
-  await fetchTimers();
-}
-
-createTimerButton.addEventListener("click", async () => {
-  const name = window.prompt("write a name:", "Timer");
-  if (name === null) {
-    return;
-  }
-
-  await createTimer(name);
-});
-
-timersList.addEventListener("click", async (event) => {
-  const button = event.target.closest("button[data-action]");
-  if (!button) {
-    return;
-  }
-
-  const card = button.closest("[data-id]");
-  const id = card?.getAttribute("data-id");
-  if (!id) {
-    return;
-  }
-
-  if (button.dataset.action === "restart") {
-    await restartTimer(id);
-  }
-
-  if (button.dataset.action === "rename") {
-    await renameTimer(id, button.textContent || "Timer");
-  }
-
-  if (button.dataset.action === "delete") {
-    await deleteTimer(id);
-  }
-});
-
-signOutButton.addEventListener("click", async () => {
-  showMessage("Signing out...");
-  const { error } = await supabaseClient.auth.signOut();
-
-  if (error) {
-    showMessage(error.message, "error");
-    return;
-  }
-
-  window.location.href = "signin.html";
-});
-
-async function initializeTimerPage() {
-  if (!requireSupabase()) {
-    return;
-  }
-
-  const {
-    data: { session },
-  } = await supabaseClient.auth.getSession();
-
-  if (!session?.user) {
+onboardingBackButton?.addEventListener("click", () => {
+  if (state.onboardingStep === 0) {
     window.location.href = "signin.html";
     return;
   }
 
-  state.session = session;
-  userEmail.textContent = session.user.email;
-  await fetchTimers();
+  state.onboardingStep -= 1;
+  showMessage("");
+  renderOnboardingStep();
+});
 
-  supabaseClient.auth.onAuthStateChange((_event, nextSession) => {
-    if (!nextSession?.user) {
-      window.location.href = "signin.html";
+onboardingNextButton?.addEventListener("click", () => {
+  if (!validateOnboardingStep(state.onboardingStep)) {
+    return;
+  }
+
+  if (state.onboardingStep < onboardingSteps.length - 1) {
+    state.onboardingStep += 1;
+    renderOnboardingStep();
+  }
+});
+
+onboardingForm?.addEventListener("submit", submitOnboarding);
+
+(async function initializeHomePage() {
+  try {
+    showMessage("Loading to2better...");
+    const app = await BetterApp.initializeShell({ allowUnonboarded: true });
+    if (!app) {
+      return;
     }
-  });
-}
 
-initializeTimerPage();
+    state.session = app.session;
+    state.profile = app.profile;
+    renderPage();
+  } catch (error) {
+    showMessage(error.message || "Unable to load to2better.", "error");
+  }
+})();
