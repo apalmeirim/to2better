@@ -1,15 +1,15 @@
-const growthState = {
+const growState = {
   session: null,
   tasks: [],
   logs: [],
 };
 
-const createGrowthButton = document.querySelector("#create-growth-button");
-const growthList = document.querySelector("#growth-list");
+const creategrowButton = document.querySelector("#create-grow-button");
+const growList = document.querySelector("#grow-list");
 
-function renderGrowthTasks() {
-  if (!growthState.tasks.length) {
-    growthList.innerHTML = `
+function rendergrowTasks() {
+  if (!growState.tasks.length) {
+    growList.innerHTML = `
       <div class="empty-state">
         <p>setup a daily task to create consistency.</p>
       </div>
@@ -18,10 +18,10 @@ function renderGrowthTasks() {
   }
 
   const todayKey = BetterApp.toDateKey();
-  growthList.innerHTML = growthState.tasks
+  growList.innerHTML = growState.tasks
     .map((task) => {
-      const todaysLog = growthState.logs.find((log) => log.task_id === task.id && log.log_date === todayKey);
-      const streak = BetterApp.computeTaskStreak(growthState.logs, task.id);
+      const todaysLog = growState.logs.find((log) => log.task_id === task.id && log.log_date === todayKey);
+      const streak = BetterApp.computeTaskStreak(growState.logs, task.id);
 
       return `
         <article class="task-card" data-task-id="${task.id}">
@@ -40,21 +40,21 @@ function renderGrowthTasks() {
     .join("");
 }
 
-async function reloadGrowthData() {
+async function reloadgrowData() {
   const [tasks, logs] = await Promise.all([
-    BetterApp.fetchGrowthTasks(),
-    BetterApp.fetchGrowthLogs(),
+    BetterApp.fetchgrowTasks(),
+    BetterApp.fetchgrowLogs(),
   ]);
 
-  growthState.tasks = tasks;
-  growthState.logs = logs;
-  renderGrowthTasks();
+  growState.tasks = tasks;
+  growState.logs = logs;
+  rendergrowTasks();
   showMessage("");
 }
 
-async function addGrowthTask(title) {
-  const { error } = await supabaseClient.from("growth_tasks").insert({
-    user_id: growthState.session.user.id,
+async function addgrowTask(title) {
+  const { error } = await supabaseClient.from("grow_tasks").insert({
+    user_id: growState.session.user.id,
     title: title.trim(),
   });
 
@@ -63,14 +63,14 @@ async function addGrowthTask(title) {
   }
 }
 
-async function toggleGrowthTask(taskId) {
+async function togglegrowTask(taskId) {
   const today = BetterApp.toDateKey();
-  const existing = growthState.logs.find((item) => item.task_id === taskId && item.log_date === today);
+  const existing = growState.logs.find((item) => item.task_id === taskId && item.log_date === today);
 
   if (!existing) {
-    const { error } = await supabaseClient.from("growth_task_logs").insert({
+    const { error } = await supabaseClient.from("grow_task_logs").insert({
       task_id: taskId,
-      user_id: growthState.session.user.id,
+      user_id: growState.session.user.id,
       log_date: today,
       completed: true,
     });
@@ -82,7 +82,7 @@ async function toggleGrowthTask(taskId) {
   }
 
   const { error } = await supabaseClient
-    .from("growth_task_logs")
+    .from("grow_task_logs")
     .update({ completed: !existing.completed })
     .eq("id", existing.id);
 
@@ -91,9 +91,9 @@ async function toggleGrowthTask(taskId) {
   }
 }
 
-async function deleteGrowthTask(taskId) {
+async function deletegrowTask(taskId) {
   const { error } = await supabaseClient
-    .from("growth_tasks")
+    .from("grow_tasks")
     .update({ archived_at: new Date().toISOString() })
     .eq("id", taskId);
 
@@ -102,22 +102,22 @@ async function deleteGrowthTask(taskId) {
   }
 }
 
-createGrowthButton?.addEventListener("click", async () => {
+creategrowButton?.addEventListener("click", async () => {
   const title = window.prompt("write a daily task:", "");
   if (title === null || !title.trim()) {
     return;
   }
 
   try {
-    showMessage("Adding growth task...");
-    await addGrowthTask(title);
-    await reloadGrowthData();
+    showMessage("Adding grow task...");
+    await addgrowTask(title);
+    await reloadgrowData();
   } catch (error) {
     showMessage(error.message, "error");
   }
 });
 
-growthList?.addEventListener("click", async (event) => {
+growList?.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
   if (!button) {
     return;
@@ -131,21 +131,21 @@ growthList?.addEventListener("click", async (event) => {
   try {
     if (button.dataset.action === "toggle-task") {
       showMessage("Updating daily tracker...");
-      await toggleGrowthTask(taskId);
+      await togglegrowTask(taskId);
     }
 
     if (button.dataset.action === "delete-task") {
-      showMessage("Removing growth task...");
-      await deleteGrowthTask(taskId);
+      showMessage("Removing grow task...");
+      await deletegrowTask(taskId);
     }
 
-    await reloadGrowthData();
+    await reloadgrowData();
   } catch (error) {
     showMessage(error.message, "error");
   }
 });
 
-(async function initializeGrowthPage() {
+(async function initializegrowPage() {
   try {
     showMessage("Loading to2better...");
     const app = await BetterApp.initializeShell();
@@ -153,9 +153,9 @@ growthList?.addEventListener("click", async (event) => {
       return;
     }
 
-    growthState.session = app.session;
-    await reloadGrowthData();
+    growState.session = app.session;
+    await reloadgrowData();
   } catch (error) {
-    showMessage(error.message || "Unable to load growth.", "error");
+    showMessage(error.message || "Unable to load grow.", "error");
   }
 })();

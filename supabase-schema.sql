@@ -34,7 +34,7 @@ create table if not exists public.timer_resets (
   reset_at timestamptz not null default now()
 );
 
-create table if not exists public.growth_tasks (
+create table if not exists public.grow_tasks (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   title text not null,
@@ -42,9 +42,9 @@ create table if not exists public.growth_tasks (
   archived_at timestamptz
 );
 
-create table if not exists public.growth_task_logs (
+create table if not exists public.grow_task_logs (
   id uuid primary key default gen_random_uuid(),
-  task_id uuid not null references public.growth_tasks(id) on delete cascade,
+  task_id uuid not null references public.grow_tasks(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
   log_date date not null,
   completed boolean not null default false,
@@ -52,12 +52,20 @@ create table if not exists public.growth_task_logs (
   unique (task_id, log_date)
 );
 
-create table if not exists public.weekly_reflections (
+create table if not exists public.todo_tasks (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text not null,
+  completed_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.weekly_reflects (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   week_start date not null,
   word text not null,
-  reflection text not null default '',
+  reflect text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique (user_id, week_start)
@@ -76,18 +84,20 @@ create table if not exists public.monthly_chapters (
 create index if not exists focus_items_user_id_idx on public.focus_items (user_id, kind);
 create index if not exists timers_user_id_idx on public.timers (user_id, created_at desc);
 create index if not exists timer_resets_user_id_idx on public.timer_resets (user_id, reset_at desc);
-create index if not exists growth_tasks_user_id_idx on public.growth_tasks (user_id, created_at desc);
-create index if not exists growth_task_logs_user_id_idx on public.growth_task_logs (user_id, log_date desc);
-create index if not exists weekly_reflections_user_id_idx on public.weekly_reflections (user_id, week_start desc);
+create index if not exists grow_tasks_user_id_idx on public.grow_tasks (user_id, created_at desc);
+create index if not exists grow_task_logs_user_id_idx on public.grow_task_logs (user_id, log_date desc);
+create index if not exists todo_tasks_user_id_idx on public.todo_tasks (user_id, created_at desc);
+create index if not exists weekly_reflects_user_id_idx on public.weekly_reflects (user_id, week_start desc);
 create index if not exists monthly_chapters_user_id_idx on public.monthly_chapters (user_id, month_start desc);
 
 alter table public.profiles enable row level security;
 alter table public.focus_items enable row level security;
 alter table public.timers enable row level security;
 alter table public.timer_resets enable row level security;
-alter table public.growth_tasks enable row level security;
-alter table public.growth_task_logs enable row level security;
-alter table public.weekly_reflections enable row level security;
+alter table public.grow_tasks enable row level security;
+alter table public.grow_task_logs enable row level security;
+alter table public.todo_tasks enable row level security;
+alter table public.weekly_reflects enable row level security;
 alter table public.monthly_chapters enable row level security;
 
 create policy "Users can select own profile"
@@ -171,77 +181,102 @@ for insert
 to authenticated
 with check (auth.uid() = user_id);
 
-create policy "Users can select own growth tasks"
-on public.growth_tasks
+create policy "Users can select own grow tasks"
+on public.grow_tasks
 for select
 to authenticated
 using (auth.uid() = user_id);
 
-create policy "Users can insert own growth tasks"
-on public.growth_tasks
+create policy "Users can insert own grow tasks"
+on public.grow_tasks
 for insert
 to authenticated
 with check (auth.uid() = user_id);
 
-create policy "Users can update own growth tasks"
-on public.growth_tasks
+create policy "Users can update own grow tasks"
+on public.grow_tasks
 for update
 to authenticated
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
 
-create policy "Users can delete own growth tasks"
-on public.growth_tasks
+create policy "Users can delete own grow tasks"
+on public.grow_tasks
 for delete
 to authenticated
 using (auth.uid() = user_id);
 
-create policy "Users can select own growth task logs"
-on public.growth_task_logs
+create policy "Users can select own grow task logs"
+on public.grow_task_logs
 for select
 to authenticated
 using (auth.uid() = user_id);
 
-create policy "Users can insert own growth task logs"
-on public.growth_task_logs
+create policy "Users can insert own grow task logs"
+on public.grow_task_logs
 for insert
 to authenticated
 with check (auth.uid() = user_id);
 
-create policy "Users can update own growth task logs"
-on public.growth_task_logs
+create policy "Users can update own grow task logs"
+on public.grow_task_logs
 for update
 to authenticated
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
 
-create policy "Users can delete own growth task logs"
-on public.growth_task_logs
+create policy "Users can delete own grow task logs"
+on public.grow_task_logs
 for delete
 to authenticated
 using (auth.uid() = user_id);
 
-create policy "Users can select own weekly reflections"
-on public.weekly_reflections
+create policy "Users can select own todo tasks"
+on public.todo_tasks
 for select
 to authenticated
 using (auth.uid() = user_id);
 
-create policy "Users can insert own weekly reflections"
-on public.weekly_reflections
+create policy "Users can insert own todo tasks"
+on public.todo_tasks
 for insert
 to authenticated
 with check (auth.uid() = user_id);
 
-create policy "Users can update own weekly reflections"
-on public.weekly_reflections
+create policy "Users can update own todo tasks"
+on public.todo_tasks
 for update
 to authenticated
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
 
-create policy "Users can delete own weekly reflections"
-on public.weekly_reflections
+create policy "Users can delete own todo tasks"
+on public.todo_tasks
+for delete
+to authenticated
+using (auth.uid() = user_id);
+
+create policy "Users can select own weekly reflects"
+on public.weekly_reflects
+for select
+to authenticated
+using (auth.uid() = user_id);
+
+create policy "Users can insert own weekly reflects"
+on public.weekly_reflects
+for insert
+to authenticated
+with check (auth.uid() = user_id);
+
+create policy "Users can update own weekly reflects"
+on public.weekly_reflects
+for update
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy "Users can delete own weekly reflects"
+on public.weekly_reflects
 for delete
 to authenticated
 using (auth.uid() = user_id);

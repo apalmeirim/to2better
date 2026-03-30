@@ -76,7 +76,7 @@ const BetterApp = (() => {
     return `${formatShortDate(start)} - ${formatShortDate(end)}`;
   }
 
-  function isReflectionUnlocked(weekStart) {
+  function isreflectUnlocked(weekStart) {
     const unlockDate = addDays(new Date(`${weekStart}T00:00:00`), 7);
     return Date.now() >= unlockDate.getTime();
   }
@@ -243,9 +243,9 @@ const BetterApp = (() => {
     }));
   }
 
-  async function fetchGrowthTasks() {
+  async function fetchgrowTasks() {
     const { data, error } = await supabaseClient
-      .from("growth_tasks")
+      .from("grow_tasks")
       .select("id, title, created_at, archived_at")
       .is("archived_at", null)
       .order("created_at", { ascending: false });
@@ -257,9 +257,9 @@ const BetterApp = (() => {
     return data || [];
   }
 
-  async function fetchGrowthLogs() {
+  async function fetchgrowLogs() {
     const { data, error } = await supabaseClient
-      .from("growth_task_logs")
+      .from("grow_task_logs")
       .select("id, task_id, log_date, completed")
       .order("log_date", { ascending: false });
 
@@ -270,10 +270,10 @@ const BetterApp = (() => {
     return data || [];
   }
 
-  async function fetchWeeklyReflections() {
+  async function fetchWeeklyreflects() {
     const { data, error } = await supabaseClient
-      .from("weekly_reflections")
-      .select("id, week_start, word, reflection, created_at")
+      .from("weekly_reflects")
+      .select("id, week_start, word, reflect, created_at")
       .order("week_start", { ascending: false });
 
     if (error) {
@@ -307,16 +307,16 @@ const BetterApp = (() => {
     addDays,
     monthLabel,
     weekRangeLabel,
-    isReflectionUnlocked,
+    isreflectUnlocked,
     computeTaskStreak,
     formatElapsedTime,
     initializeShell,
     ensureProfile,
     fetchTimers,
     fetchTimerResets,
-    fetchGrowthTasks,
-    fetchGrowthLogs,
-    fetchWeeklyReflections,
+    fetchgrowTasks,
+    fetchgrowLogs,
+    fetchWeeklyreflects,
     fetchMonthlyChapters,
   };
 })();

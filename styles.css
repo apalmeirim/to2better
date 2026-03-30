@@ -267,7 +267,11 @@ textarea:focus {
   font-size: 1.2rem;
 }
 
-.reflection-nav {
+.hub-link-button {
+  font-size: 1.2rem;
+}
+
+.reflect-nav {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 20px;
@@ -275,36 +279,36 @@ textarea:focus {
   width: 100%;
 }
 
-.reflection-links {
+.reflect-links {
   gap: 18px;
 }
 
-.reflection-link[disabled] {
+.reflect-link[disabled] {
   opacity: 0.35;
   cursor: default;
   text-decoration: none;
 }
 
-.reflection-link[aria-disabled="true"] {
+.reflect-link[aria-disabled="true"] {
   opacity: 0.35;
   pointer-events: none;
   text-decoration: none;
 }
 
-.reflection-link-current {
+.reflect-link-current {
   display: inline-block;
   padding: 4px 8px;
   border: 1px solid var(--text);
 }
 
-.reflection-title-button {
+.reflect-title-button {
   margin: 0 auto;
   font-size: 1.5rem;
   font-weight: 700;
   text-transform: lowercase;
 }
 
-.week-reflection-view {
+.week-reflect-view {
   width: min(100%, 560px);
   margin: 0 auto;
 }
@@ -407,7 +411,7 @@ textarea:focus {
 
 .timer-card,
 .task-card,
-.reflection-card,
+.reflect-card,
 .chapter-card,
 .calendar-card,
 .log-card {
@@ -416,21 +420,21 @@ textarea:focus {
 
 .timer-card:first-child,
 .task-card:first-child,
-.reflection-card:first-child,
+.reflect-card:first-child,
 .chapter-card:first-child,
 .calendar-card:first-child,
 .log-card:first-child {
   padding-top: 0;
 }
 
-.reflection-card,
+.reflect-card,
 .chapter-card,
 .calendar-card,
 .log-card {
   border-top: 1px solid var(--line-soft);
 }
 
-.reflection-card:first-child,
+.reflect-card:first-child,
 .chapter-card:first-child,
 .calendar-card:first-child,
 .log-card:first-child {
@@ -439,7 +443,7 @@ textarea:focus {
 
 .timer-card,
 .task-card,
-.reflection-card,
+.reflect-card,
 .chapter-card,
 .calendar-card,
 .log-card {
@@ -449,7 +453,7 @@ textarea:focus {
 .timer-name-button,
 .timer-title,
 .task-title,
-.reflection-word,
+.reflect-word,
 .chapter-word,
 .account-value {
   margin: 0 0 10px;
@@ -484,7 +488,7 @@ textarea:focus {
 }
 
 .task-row,
-.reflection-meta {
+.reflect-meta {
   display: flex;
   justify-content: center;
   gap: 16px;
@@ -493,7 +497,7 @@ textarea:focus {
 }
 
 .task-title,
-.reflection-word,
+.reflect-word,
 .chapter-word {
   font-size: 1rem;
 }
@@ -502,10 +506,14 @@ textarea:focus {
   color: var(--success);
 }
 
+.task-card .hidden {
+  display: none;
+}
+
 .task-streak,
 .calendar-note,
 .log-meta,
-.reflection-meta,
+.reflect-meta,
 .chapter-meta {
   margin: 0;
   color: var(--muted);
@@ -521,13 +529,13 @@ textarea:focus {
   color: var(--muted);
 }
 
-.reflection-columns {
+.reflect-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 
-.reflection-columns h3,
+.reflect-columns h3,
 .stack h3 {
   margin: 0 0 12px;
   font-size: 0.92rem;
@@ -537,7 +545,7 @@ textarea:focus {
   text-align: center;
 }
 
-.reflection-textarea {
+.reflect-textarea {
   margin-top: 12px;
   min-height: 120px;
 }
@@ -652,7 +660,7 @@ textarea:focus {
 
 @media (max-width: 960px) {
   .dashboard-grid,
-  .reflection-columns {
+  .reflect-columns {
     grid-template-columns: 1fr;
   }
 }
@@ -670,7 +678,7 @@ textarea:focus {
   .panel-heading,
   .account-row,
   .task-row,
-  .reflection-meta {
+  .reflect-meta {
     display: grid;
   }
 

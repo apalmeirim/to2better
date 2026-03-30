@@ -2,9 +2,9 @@ const logsState = {
   session: null,
   profileCreatedAt: null,
   timerResets: [],
-  growthLogs: [],
-  growthTasks: [],
-  weeklyReflections: [],
+  growLogs: [],
+  growTasks: [],
+  weeklyreflects: [],
   monthlyChapters: [],
   visibleMonth: BetterApp.startOfMonth(),
   selectedDayKey: BetterApp.toDateKey(),
@@ -21,16 +21,16 @@ const selectedTasksList = document.querySelector("#selected-tasks-list");
 const selectedResetsList = document.querySelector("#selected-resets-list");
 
 function getTaskName(taskId) {
-  return logsState.growthTasks.find((task) => task.id === taskId)?.title || "Task";
+  return logsState.growTasks.find((task) => task.id === taskId)?.title || "Task";
 }
 
 function getWeekWordForDay(dayKey) {
   const weekKey = BetterApp.toDateKey(BetterApp.startOfWeek(new Date(`${dayKey}T00:00:00`)));
-  return logsState.weeklyReflections.find((item) => item.week_start === weekKey)?.word || "No word set";
+  return logsState.weeklyreflects.find((item) => item.week_start === weekKey)?.word || "No word set";
 }
 
 function getCompletedTasksForDay(dayKey) {
-  return logsState.growthLogs
+  return logsState.growLogs
     .filter((log) => log.log_date === dayKey && log.completed)
     .map((log) => getTaskName(log.task_id));
 }
@@ -123,18 +123,18 @@ function renderCalendar() {
 }
 
 async function reloadLogsData() {
-  const [timerResets, growthLogs, growthTasks, weeklyReflections, monthlyChapters] = await Promise.all([
+  const [timerResets, growLogs, growTasks, weeklyreflects, monthlyChapters] = await Promise.all([
     BetterApp.fetchTimerResets(logsState.session.user.id),
-    BetterApp.fetchGrowthLogs(),
-    BetterApp.fetchGrowthTasks(),
-    BetterApp.fetchWeeklyReflections(),
+    BetterApp.fetchgrowLogs(),
+    BetterApp.fetchgrowTasks(),
+    BetterApp.fetchWeeklyreflects(),
     BetterApp.fetchMonthlyChapters(),
   ]);
 
   logsState.timerResets = timerResets;
-  logsState.growthLogs = growthLogs;
-  logsState.growthTasks = growthTasks;
-  logsState.weeklyReflections = weeklyReflections;
+  logsState.growLogs = growLogs;
+  logsState.growTasks = growTasks;
+  logsState.weeklyreflects = weeklyreflects;
   logsState.monthlyChapters = monthlyChapters;
 
   renderCalendar();

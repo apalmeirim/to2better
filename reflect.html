@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>control</title>
+  <title>reflect</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body data-page="control">
+<body data-page="reflect">
   <main class="page">
     <section class="dashboard-view dashboard-view-narrow">
       <section id="message" class="message hidden" aria-live="polite"></section>
@@ -18,14 +18,16 @@
       <section class="sector-page sector-page-plain">
         <div class="panel-heading">
           <div>
-            <h2>control</h2>
-            <div class="section-actions">
-              <button id="create-timer-button" type="button" class="link-button">add</button>
-            </div>
+            <button id="reflect-title" type="button" class="timer-name-button reflect-title-button">weeks</button>
+            <p id="reflect-dates" class="muted"></p>
           </div>
         </div>
 
-        <div id="timers-list" class="stack" aria-live="polite"></div>
+        <div class="reflect-nav">
+          <button id="reflect-prev-button" type="button" class="link-button">&lt;</button>
+          <div id="reflect-links" class="hub-links reflect-links"></div>
+          <button id="reflect-next-button" type="button" class="link-button">&gt;</button>
+        </div>
       </section>
     </section>
   </main>
@@ -33,6 +35,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/better-app.js"></script>
-  <script src="js/control.js"></script>
+  <script src="js/reflection.js"></script>
 </body>
 </html>

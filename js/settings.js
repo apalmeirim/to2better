@@ -11,9 +11,9 @@ async function resetAllData() {
   const now = new Date().toISOString();
 
   const operations = [
-    supabaseClient.from("weekly_reflections").delete().eq("user_id", userId),
+    supabaseClient.from("weekly_reflects").delete().eq("user_id", userId),
     supabaseClient.from("monthly_chapters").delete().eq("user_id", userId),
-    supabaseClient.from("growth_tasks").delete().eq("user_id", userId),
+    supabaseClient.from("grow_tasks").delete().eq("user_id", userId),
     supabaseClient.from("timers").delete().eq("user_id", userId),
     supabaseClient.from("focus_items").delete().eq("user_id", userId),
     supabaseClient.from("profiles").update({ onboarded_at: null, updated_at: now }).eq("user_id", userId),

@@ -1,14 +1,14 @@
-const weekReflectionState = {
+const weekreflectState = {
   session: null,
   weekStart: null,
   record: null,
 };
 
-const weekReflectionDates = document.querySelector("#week-reflection-dates");
-const weekReflectionWord = document.querySelector("#week-reflection-word");
-const weekReflectionInput = document.querySelector("#week-reflection-input");
-const weekReflectionStatus = document.querySelector("#week-reflection-status");
-const saveWeekReflectionButton = document.querySelector("#save-week-reflection-button");
+const weekreflectDates = document.querySelector("#week-reflect-dates");
+const weekreflectWord = document.querySelector("#week-reflect-word");
+const weekreflectInput = document.querySelector("#week-reflect-input");
+const weekreflectStatus = document.querySelector("#week-reflect-status");
+const saveWeekreflectButton = document.querySelector("#save-week-reflect-button");
 
 function getRequestedWeekStart() {
   const params = new URLSearchParams(window.location.search);
@@ -34,135 +34,135 @@ function getWeekMode(weekStartKey) {
   return "edit";
 }
 
-function renderWeekReflection() {
-  const weekStartKey = weekReflectionState.weekStart;
+function renderWeekreflect() {
+  const weekStartKey = weekreflectState.weekStart;
   const start = new Date(`${weekStartKey}T00:00:00`);
   const end = BetterApp.addDays(start, 6);
   const mode = getWeekMode(weekStartKey);
-  const word = weekReflectionState.record?.word || "unset";
+  const word = weekreflectState.record?.word || "unset";
 
-  weekReflectionDates.textContent = `${BetterApp.formatShortDate(start)} - ${BetterApp.formatShortDate(end)}`;
-  weekReflectionWord.textContent = word;
-  weekReflectionInput.value = weekReflectionState.record?.reflection || "";
+  weekreflectDates.textContent = `${BetterApp.formatShortDate(start)} - ${BetterApp.formatShortDate(end)}`;
+  weekreflectWord.textContent = word;
+  weekreflectInput.value = weekreflectState.record?.reflect || "";
 
   if (mode === "edit") {
-    weekReflectionStatus.textContent = "write for this week";
-    weekReflectionInput.disabled = false;
-    saveWeekReflectionButton.disabled = false;
-    saveWeekReflectionButton.classList.remove("inactive");
-    weekReflectionWord.disabled = false;
+    weekreflectStatus.textContent = "write for this week";
+    weekreflectInput.disabled = false;
+    saveWeekreflectButton.disabled = false;
+    saveWeekreflectButton.classList.remove("inactive");
+    weekreflectWord.disabled = false;
     return;
   }
 
   if (mode === "view") {
-    weekReflectionStatus.textContent = "this week has passed and is now view only";
+    weekreflectStatus.textContent = "this week has passed and is now view only";
   } else {
-    weekReflectionStatus.textContent = "this week has not started yet";
+    weekreflectStatus.textContent = "this week has not started yet";
   }
 
-  weekReflectionInput.disabled = true;
-  saveWeekReflectionButton.disabled = true;
-  saveWeekReflectionButton.classList.add("inactive");
-  weekReflectionWord.disabled = true;
+  weekreflectInput.disabled = true;
+  saveWeekreflectButton.disabled = true;
+  saveWeekreflectButton.classList.add("inactive");
+  weekreflectWord.disabled = true;
 }
 
 async function loadWeekRecord() {
   const { data, error } = await supabaseClient
-    .from("weekly_reflections")
-    .select("id, week_start, word, reflection")
-    .eq("week_start", weekReflectionState.weekStart)
+    .from("weekly_reflects")
+    .select("id, week_start, word, reflect")
+    .eq("week_start", weekreflectState.weekStart)
     .maybeSingle();
 
   if (error) {
     throw error;
   }
 
-  weekReflectionState.record = data;
+  weekreflectState.record = data;
 }
 
-async function saveWeekReflection() {
-  const mode = getWeekMode(weekReflectionState.weekStart);
+async function saveWeekreflect() {
+  const mode = getWeekMode(weekreflectState.weekStart);
   if (mode !== "edit") {
-    throw new Error("This reflection is not editable right now.");
+    throw new Error("This reflect is not editable right now.");
   }
 
   const payload = {
-    user_id: weekReflectionState.session.user.id,
-    week_start: weekReflectionState.weekStart,
-    word: weekReflectionState.record?.word || "unset",
-    reflection: weekReflectionInput.value.trim(),
+    user_id: weekreflectState.session.user.id,
+    week_start: weekreflectState.weekStart,
+    word: weekreflectState.record?.word || "unset",
+    reflect: weekreflectInput.value.trim(),
     updated_at: new Date().toISOString(),
   };
 
   const { data, error } = await supabaseClient
-    .from("weekly_reflections")
+    .from("weekly_reflects")
     .upsert(payload, { onConflict: "user_id,week_start" })
-    .select("id, week_start, word, reflection")
+    .select("id, week_start, word, reflect")
     .single();
 
   if (error) {
     throw error;
   }
 
-  weekReflectionState.record = data;
+  weekreflectState.record = data;
 }
 
 async function updateWeekWord() {
-  const mode = getWeekMode(weekReflectionState.weekStart);
+  const mode = getWeekMode(weekreflectState.weekStart);
   if (mode !== "edit") {
     throw new Error("This week word is not editable right now.");
   }
 
-  const nextWord = window.prompt("edit the week word:", weekReflectionState.record?.word || "");
+  const nextWord = window.prompt("edit the week word:", weekreflectState.record?.word || "");
   if (nextWord === null) {
     return;
   }
 
   const word = nextWord.trim() || "unset";
   const payload = {
-    user_id: weekReflectionState.session.user.id,
-    week_start: weekReflectionState.weekStart,
+    user_id: weekreflectState.session.user.id,
+    week_start: weekreflectState.weekStart,
     word,
-    reflection: weekReflectionState.record?.reflection || "",
+    reflect: weekreflectState.record?.reflect || "",
     updated_at: new Date().toISOString(),
   };
 
   const { data, error } = await supabaseClient
-    .from("weekly_reflections")
+    .from("weekly_reflects")
     .upsert(payload, { onConflict: "user_id,week_start" })
-    .select("id, week_start, word, reflection")
+    .select("id, week_start, word, reflect")
     .single();
 
   if (error) {
     throw error;
   }
 
-  weekReflectionState.record = data;
+  weekreflectState.record = data;
 }
 
-saveWeekReflectionButton?.addEventListener("click", async () => {
+saveWeekreflectButton?.addEventListener("click", async () => {
   try {
-    showMessage("Saving reflection...");
-    await saveWeekReflection();
-    renderWeekReflection();
-    showMessage("Reflection saved.");
+    showMessage("Saving reflect...");
+    await saveWeekreflect();
+    renderWeekreflect();
+    showMessage("reflect saved.");
   } catch (error) {
-    showMessage(error.message || "Unable to save reflection.", "error");
+    showMessage(error.message || "Unable to save reflect.", "error");
   }
 });
 
-weekReflectionWord?.addEventListener("click", async () => {
+weekreflectWord?.addEventListener("click", async () => {
   try {
     showMessage("Updating week word...");
     await updateWeekWord();
-    renderWeekReflection();
+    renderWeekreflect();
     showMessage("");
   } catch (error) {
     showMessage(error.message || "Unable to update week word.", "error");
   }
 });
 
-(async function initializeWeekReflectionPage() {
+(async function initializeWeekreflectPage() {
   try {
     showMessage("Loading to2better...");
     const app = await BetterApp.initializeShell();
@@ -172,16 +172,16 @@ weekReflectionWord?.addEventListener("click", async () => {
 
     const weekStart = getRequestedWeekStart();
     if (!weekStart) {
-      window.location.href = "reflection.html";
+      window.location.href = "reflect.html";
       return;
     }
 
-    weekReflectionState.session = app.session;
-    weekReflectionState.weekStart = weekStart;
+    weekreflectState.session = app.session;
+    weekreflectState.weekStart = weekStart;
     await loadWeekRecord();
-    renderWeekReflection();
+    renderWeekreflect();
     showMessage("");
   } catch (error) {
-    showMessage(error.message || "Unable to load week reflection.", "error");
+    showMessage(error.message || "Unable to load week reflect.", "error");
   }
 })();

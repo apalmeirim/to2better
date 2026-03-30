@@ -4,7 +4,6 @@ const state = {
   onboardingStep: 0,
 };
 
-const dashboardHeader = document.querySelector("#dashboard-header");
 const onboardingPanel = document.querySelector("#onboarding-panel");
 const pageContent = document.querySelector("#page-content");
 const onboardingForm = document.querySelector("#onboarding-form");
@@ -102,7 +101,7 @@ async function submitOnboarding(event) {
   }
 
   if (startRows.length) {
-    const { error } = await supabaseClient.from("growth_tasks").insert(
+    const { error } = await supabaseClient.from("grow_tasks").insert(
       startRows.map((item) => ({
         user_id: userId,
         title: item.name,
@@ -119,7 +118,7 @@ async function submitOnboarding(event) {
   const monthStart = BetterApp.toDateKey(BetterApp.startOfMonth());
 
   const [{ error: weeklyError }, { error: monthlyError }, { data: profileData, error: profileError }] = await Promise.all([
-    supabaseClient.from("weekly_reflections").upsert(
+    supabaseClient.from("weekly_reflects").upsert(
       {
         user_id: userId,
         week_start: weekStart,
@@ -158,7 +157,6 @@ async function submitOnboarding(event) {
 
 function renderPage() {
   const onboarded = Boolean(state.profile?.onboarded_at);
-  dashboardHeader.classList.toggle("hidden", !onboarded);
   onboardingPanel.classList.toggle("hidden", onboarded);
   pageContent.classList.toggle("hidden", !onboarded);
 
