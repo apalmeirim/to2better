@@ -1,6 +1,6 @@
-# addiction timer
+# to2better
 
-this app is for me to remove multiple bad habits in my life.
+this app is for me to remove multiple bad habits in my life and reflect on multiple aspects.
 it creates accountability, and a simple free way to keep track of time.
 
 ## tech stack
