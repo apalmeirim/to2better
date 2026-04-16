@@ -20,6 +20,9 @@
           <div>
             <h2>grow</h2>
             <div class="section-actions">
+              <button id="reset-day-button" type="button" class="link-button">time</button>
+            </div>
+            <div class="section-actions">
               <button id="create-grow-button" type="button" class="link-button">add</button>
             </div>
           </div>
@@ -29,6 +32,26 @@
       </section>
     </section>
   </main>
+
+  <dialog id="reset-day-dialog" class="popup-dialog">
+    <form method="dialog" class="popup-panel stack">
+      <h3 class="popup-title">set time</h3>
+      <div class="time-picker" aria-label="reset time in 24-hour format">
+        <label class="time-spin-field">
+          <input id="reset-day-hour" class="time-spin-input" type="text" inputmode="none" readonly aria-label="hour">
+        </label>
+        <span class="time-separator" aria-hidden="true">:</span>
+        <label class="time-spin-field"></label>
+          <input id="reset-day-minute" class="time-spin-input" type="text" inputmode="none" readonly aria-label="minute">
+        </label>
+      </div>
+      <p class="calendar-note">tasks will count till the set time.</p>
+      <div class="section-actions">
+        <button type="button" id="cancel-reset-day-button" class="link-button">cancel</button>
+        <button type="submit" id="save-reset-day-button" class="link-button">save</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>

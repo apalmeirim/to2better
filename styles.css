@@ -331,6 +331,69 @@ textarea:focus {
   gap: 0.75rem;
 }
 
+.popup-dialog {
+  width: min(360px, calc(100vw - 24px));
+  border: 1px solid var(--line-soft);
+  padding: 0;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.popup-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.popup-panel {
+  padding: 24px;
+}
+
+.popup-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: lowercase;
+  text-align: center;
+}
+
+.time-picker {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 12px;
+}
+
+.time-spin-field {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.time-spin-field span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-transform: lowercase;
+}
+
+.time-spin-input {
+  width: 4ch;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  text-align: center;
+}
+
+.time-spin-input:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+}
+
+.time-separator {
+  padding-bottom: 12px;
+  font-size: 1.1rem;
+}
+
 .calendar-inline {
   width: min(320px, 100%);
   margin: 0 auto;
@@ -518,6 +581,7 @@ textarea:focus {
   margin: 0;
   color: var(--muted);
   font-size: 0.85rem;
+  text-align: center;
 }
 
 .status-button {
@@ -671,6 +735,10 @@ textarea:focus {
   }
 
   .panel {
+    padding: 18px;
+  }
+
+  .popup-panel {
     padding: 18px;
   }
 

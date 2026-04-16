@@ -3,10 +3,32 @@ const controlState = {
   timers: [],
   timerResets: [],
   timerIntervalId: null,
+  pendingResetTimerId: null,
 };
 
 const createTimerButton = document.querySelector("#create-timer-button");
 const timersList = document.querySelector("#timers-list");
+const resetConfirmDialog = document.querySelector("#reset-confirm-dialog");
+const resetConfirmCopy = document.querySelector("#reset-confirm-copy");
+const cancelResetButton = document.querySelector("#cancel-reset-button");
+
+function openResetConfirmDialog(timerId) {
+  const timer = controlState.timers.find((item) => item.id === timerId);
+  if (!timer) {
+    return;
+  }
+
+  controlState.pendingResetTimerId = timerId;
+  if (resetConfirmCopy) {
+    resetConfirmCopy.textContent = `reset ${timer.name.toLowerCase()}?`;
+  }
+  resetConfirmDialog?.showModal();
+}
+
+function closeResetConfirmDialog() {
+  controlState.pendingResetTimerId = null;
+  resetConfirmDialog?.close();
+}
 
 function renderTimers() {
   if (!controlState.timers.length) {
@@ -157,8 +179,8 @@ timersList?.addEventListener("click", async (event) => {
 
   try {
     if (button.dataset.action === "restart") {
-      showMessage("Resetting timer...");
-      await restartTimer(id);
+      openResetConfirmDialog(id);
+      return;
     }
 
     if (button.dataset.action === "rename") {
@@ -170,6 +192,33 @@ timersList?.addEventListener("click", async (event) => {
       await deleteTimer(id);
     }
 
+    await reloadControlData();
+  } catch (error) {
+    showMessage(error.message, "error");
+  }
+});
+
+cancelResetButton?.addEventListener("click", () => {
+  closeResetConfirmDialog();
+});
+
+resetConfirmDialog?.addEventListener("close", () => {
+  controlState.pendingResetTimerId = null;
+});
+
+resetConfirmDialog?.querySelector("form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const timerId = controlState.pendingResetTimerId;
+  if (!timerId) {
+    closeResetConfirmDialog();
+    return;
+  }
+
+  try {
+    showMessage("Resetting timer...");
+    await restartTimer(timerId);
+    closeResetConfirmDialog();
     await reloadControlData();
   } catch (error) {
     showMessage(error.message, "error");

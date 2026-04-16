@@ -4,9 +4,13 @@ create table if not exists public.profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
   onboarded_at timestamptz,
+  reset_day_time text not null default '00:00',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.profiles
+add column if not exists reset_day_time text not null default '00:00';
 
 create table if not exists public.focus_items (
   id uuid primary key default gen_random_uuid(),

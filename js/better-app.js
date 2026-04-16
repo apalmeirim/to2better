@@ -34,6 +34,42 @@ const BetterApp = (() => {
     return `${year}-${month}-${day}`;
   }
 
+  function dateKeyToLocalDate(dateKey) {
+    const [year, month, day] = String(dateKey)
+      .split("-")
+      .map((part) => Number(part));
+
+    return new Date(year, month - 1, day);
+  }
+
+  function normalizeTimeValue(value = "00:00") {
+    const match = String(value).match(/^(\d{2}):(\d{2})$/);
+    if (!match) {
+      return "00:00";
+    }
+
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      return "00:00";
+    }
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  }
+
+  function timeValueToMinutes(value = "00:00") {
+    const normalized = normalizeTimeValue(value);
+    const [hours, minutes] = normalized.split(":").map(Number);
+    return hours * 60 + minutes;
+  }
+
+  function toResetAwareDateKey(value = new Date(), resetTime = "00:00") {
+    const date = new Date(value);
+    const resetMinutes = timeValueToMinutes(resetTime);
+    date.setMinutes(date.getMinutes() - resetMinutes);
+    return toDateKey(date);
+  }
+
   function parseList(value) {
     return String(value)
       .split(/\n|,/)
@@ -81,7 +117,7 @@ const BetterApp = (() => {
     return Date.now() >= unlockDate.getTime();
   }
 
-  function computeTaskStreak(logs, taskId) {
+  function computeTaskStreak(logs, taskId, resetTime = "00:00") {
     const completedDays = logs
       .filter((log) => log.task_id === taskId && log.completed)
       .map((log) => log.log_date);
@@ -92,9 +128,13 @@ const BetterApp = (() => {
 
     const completedSet = new Set(completedDays);
     const today = new Date();
-    const todayKey = toDateKey(today);
-    const yesterdayKey = toDateKey(addDays(today, -1));
-    let cursor = completedSet.has(todayKey) ? new Date(today) : completedSet.has(yesterdayKey) ? addDays(today, -1) : null;
+    const todayKey = toResetAwareDateKey(today, resetTime);
+    const yesterdayKey = toDateKey(addDays(dateKeyToLocalDate(todayKey), -1));
+    let cursor = completedSet.has(todayKey)
+      ? dateKeyToLocalDate(todayKey)
+      : completedSet.has(yesterdayKey)
+        ? dateKeyToLocalDate(yesterdayKey)
+        : null;
 
     if (!cursor) {
       return 0;
@@ -301,6 +341,10 @@ const BetterApp = (() => {
     formatDate,
     formatShortDate,
     toDateKey,
+    dateKeyToLocalDate,
+    normalizeTimeValue,
+    timeValueToMinutes,
+    toResetAwareDateKey,
     parseList,
     startOfWeek,
     startOfMonth,
