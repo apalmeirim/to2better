@@ -17,9 +17,7 @@
 body {
   margin: 0;
   font-family: "iA Writer Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.03), transparent 28%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
 }
 
